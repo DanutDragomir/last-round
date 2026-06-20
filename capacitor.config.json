@@ -1,0 +1,11 @@
+{
+  "appId": "com.lastround.cardgame",
+  "appName": "Last Round",
+  "webDir": "www",
+  "plugins": {
+    "FirebaseAuthentication": {
+      "skipNativeAuth": false,
+      "providers": ["google.com"]
+    }
+  }
+}

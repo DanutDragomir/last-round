@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Android build output
+android/build/
+android/.gradle/
+android/app/build/
+android/local.properties
+
+# Keystore — NEVER commit this
+*.keystore
+keystore.properties
+
+# Firebase user exports — contains personal data
+users_export.json
+
+# APK releases
+*.apk
+*.aab
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code local config
+.claude/
+www/.claude/

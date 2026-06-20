@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  width:1024px;height:1024px;background:#111;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+</style>
+</head>
+<body>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#1f4d1f"/>
+      <stop offset="100%" stop-color="#0d220d"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(240,192,64,0.25)"/>
+      <stop offset="100%" stop-color="rgba(240,192,64,0)"/>
+    </radialGradient>
+    <linearGradient id="goldBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8c060"/>
+      <stop offset="30%" stop-color="#c9a540"/>
+      <stop offset="50%" stop-color="#f0d070"/>
+      <stop offset="70%" stop-color="#c9a540"/>
+      <stop offset="100%" stop-color="#8a6c20"/>
+    </linearGradient>
+    <linearGradient id="cardBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e4a9c"/>
+      <stop offset="100%" stop-color="#0f2d6b"/>
+    </linearGradient>
+    <filter id="cardShadow">
+      <feDropShadow dx="3" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.7)"/>
+    </filter>
+    <filter id="mugGlow">
+      <feGaussianBlur stdDeviation="20" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect x="0" y="0" width="1024" height="1024" rx="220" fill="url(#bgGrad)"/>
+
+  <!-- Subtle felt texture overlay -->
+  <rect x="0" y="0" width="1024" height="1024" rx="220" fill="none"
+    stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+
+  <!-- Ambient glow behind mug -->
+  <ellipse cx="512" cy="520" rx="280" ry="220" fill="url(#glow)"/>
+
+  <!-- Card fan behind mug -->
+  <!-- Card 5 (far left) -->
+  <g transform="rotate(-40, 512, 640)" filter="url(#cardShadow)">
+    <rect x="330" y="310" width="130" height="185" rx="10" fill="url(#cardBlue)" stroke="#3d6fd4" stroke-width="2"/>
+    <rect x="338" y="318" width="114" height="169" rx="7" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  </g>
+  <!-- Card 4 -->
+  <g transform="rotate(-24, 512, 640)" filter="url(#cardShadow)">
+    <rect x="355" y="295" width="130" height="185" rx="10" fill="url(#cardBlue)" stroke="#3d6fd4" stroke-width="2"/>
+    <rect x="363" y="303" width="114" height="169" rx="7" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  </g>
+  <!-- Card 3 — Ace of Spades (prominent) -->
+  <g transform="rotate(-8, 512, 640)" filter="url(#cardShadow)">
+    <rect x="380" y="282" width="130" height="185" rx="10" fill="#ffffff" stroke="#cccccc" stroke-width="2"/>
+    <text x="394" y="318" font-size="32" font-weight="700" font-family="Georgia,serif" fill="#111">A</text>
+    <text x="394" y="348" font-size="28" font-family="Georgia,serif" fill="#111">♠</text>
+    <text x="496" y="462" font-size="32" font-weight="700" font-family="Georgia,serif" fill="#111" transform="rotate(180, 445, 390)">A</text>
+  </g>
+  <!-- Card 2 -->
+  <g transform="rotate(8, 512, 640)" filter="url(#cardShadow)">
+    <rect x="410" y="282" width="130" height="185" rx="10" fill="url(#cardBlue)" stroke="#3d6fd4" stroke-width="2"/>
+    <rect x="418" y="290" width="114" height="169" rx="7" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  </g>
+  <!-- Card 1 (far right) -->
+  <g transform="rotate(24, 512, 640)" filter="url(#cardShadow)">
+    <rect x="445" y="292" width="130" height="185" rx="10" fill="url(#cardBlue)" stroke="#3d6fd4" stroke-width="2"/>
+    <rect x="453" y="300" width="114" height="169" rx="7" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  </g>
+
+  <!-- Beer mug emoji (large, centered) -->
+  <text x="512" y="620" font-size="340" text-anchor="middle" dominant-baseline="central">🍺</text>
+
+  <!-- Gold border ring outer -->
+  <rect x="18" y="18" width="988" height="988" rx="210" fill="none"
+    stroke="url(#goldBorder)" stroke-width="10"/>
+  <!-- Gold border ring inner -->
+  <rect x="34" y="34" width="956" height="956" rx="198" fill="none"
+    stroke="rgba(201,165,64,0.3)" stroke-width="2"/>
+
+  <!-- Corner suit symbols -->
+  <text x="84" y="130" font-size="52" text-anchor="middle" font-family="Georgia,serif" fill="#c9a540">♠</text>
+  <text x="940" y="130" font-size="52" text-anchor="middle" font-family="Georgia,serif" fill="#c9a540">♥</text>
+  <text x="84" y="934" font-size="52" text-anchor="middle" font-family="Georgia,serif" fill="#c9a540">♦</text>
+  <text x="940" y="934" font-size="52" text-anchor="middle" font-family="Georgia,serif" fill="#c9a540">♣</text>
+
+  <!-- "LAST ROUND" label at bottom -->
+  <text x="512" y="900" font-size="54" font-family="Georgia,serif" font-weight="700"
+    fill="#c9a540" text-anchor="middle" letter-spacing="10">LAST ROUND</text>
+</svg>
+</body>
+</html>

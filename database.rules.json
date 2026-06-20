@@ -1,0 +1,47 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "profiles": {
+      ".read": "auth != null",
+      "$name": {
+        ".write": "auth != null"
+      }
+    },
+
+    "authMap": {
+      ".read": "auth != null",
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    },
+
+    "leaderboard": {
+      ".read": "auth != null",
+      "$name": {
+        ".write": "auth != null"
+      }
+    },
+
+    "rooms": {
+      "$roomCode": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+
+    "challenges": {
+      "$name": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+
+    "season": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}

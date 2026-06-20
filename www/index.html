@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Last Round 🍺 — The Pub Card Game</title>
+  <meta name="description" content="Last one holding cards buys the round! Free browser card game for 2–6 players. No download needed.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://last-round-card-game.web.app/">
+  <meta property="og:title" content="Last Round 🍺 — The Pub Card Game">
+  <meta property="og:description" content="Last one holding cards buys the round! Free browser card game for 2–6 players. No download needed.">
+  <meta property="og:image" content="https://last-round-card-game.web.app/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Last Round 🍺 — The Pub Card Game">
+  <meta name="twitter:description" content="Last one holding cards buys the round! Free browser card game for 2–6 players. No download needed.">
+  <meta name="twitter:image" content="https://last-round-card-game.web.app/og-image.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== LANDING SCREEN ===== -->
+  <div id="screen-landing" class="screen active">
+    <div class="landing-box">
+      <div class="landing-logo" id="landingLogo">🍺</div>
+      <h1 class="landing-title" data-i18n="landing.title">Last Round</h1>
+      <p class="landing-sub" data-i18n="landing.subtitle">The Card Game</p>
+
+      <div class="landing-actions">
+        <button class="landing-btn landing-btn-register" onclick="showAuthCreate()">
+          <span class="landing-btn-icon">🏅</span>
+          <div class="landing-btn-text">
+            <div class="landing-btn-title" data-i18n="landing.create_account">Create Account</div>
+            <div class="landing-btn-sub" data-i18n="landing.create_account_sub">Save wins · climb the leaderboard · duel others</div>
+          </div>
+          <span class="landing-btn-arrow">›</span>
+        </button>
+
+        <button class="landing-btn landing-btn-login" onclick="showAuthLogin()">
+          <span class="landing-btn-icon">🔑</span>
+          <div class="landing-btn-text">
+            <div class="landing-btn-title" data-i18n="landing.have_account">I already have an account</div>
+            <div class="landing-btn-sub" data-i18n="landing.have_account_sub">Sign in to continue your progress</div>
+          </div>
+          <span class="landing-btn-arrow">›</span>
+        </button>
+
+        <button class="landing-btn landing-btn-guest" onclick="playAsGuest()">
+          <span class="landing-btn-icon">🎲</span>
+          <div class="landing-btn-text">
+            <div class="landing-btn-title" data-i18n="landing.play_guest">Play as Guest</div>
+            <div class="landing-btn-sub" data-i18n="landing.play_guest_sub">No account needed · progress not saved</div>
+          </div>
+          <span class="landing-btn-arrow">›</span>
+        </button>
+        <button class="landing-btn landing-btn-demo" onclick="startDemoTour()">
+          <span class="landing-btn-icon">🎬</span>
+          <div class="landing-btn-text">
+            <div class="landing-btn-title" data-i18n="landing.watch_demo">Watch How to Play</div>
+            <div class="landing-btn-sub" data-i18n="landing.watch_demo_sub">A quick tour of every part of the game</div>
+          </div>
+          <span class="landing-btn-arrow">›</span>
+        </button>
+      </div>
+      <button class="btn-share-landing" onclick="shareGame()">🍺 Share with friends</button>
+      <button class="btn-lang-pick" onclick="openLangPicker()">🌐</button>
+    </div>
+  </div>
+
+  <!-- ===== DEMO TOUR OVERLAY ===== -->
+  <div id="demoTourOverlay" class="demo-tour-overlay hidden" onclick="if(event.target===this)closeDemoTour()">
+    <div class="demo-tour-panel">
+      <button class="demo-tour-close" onclick="closeDemoTour()">✕</button>
+      <div class="demo-tour-dots" id="demoTourDots"></div>
+      <div class="demo-tour-visual" id="demoTourVisual"></div>
+      <div class="demo-tour-title" id="demoTourTitle"></div>
+      <div class="demo-tour-body" id="demoTourBody"></div>
+      <div class="demo-tour-nav">
+        <button class="demo-tour-prev" id="demoTourPrev" onclick="demoTourStep(-1)">←</button>
+        <span class="demo-tour-counter" id="demoTourCounter">1 / 8</span>
+        <button class="demo-tour-next" id="demoTourNext" onclick="demoTourStep(1)">→</button>
+      </div>
+      <button class="demo-tour-play-btn" onclick="closeDemoTour();playAsGuest()">▶ Play Now — It's Free!</button>
+    </div>
+  </div>
+
+  <!-- ===== MENU SCREEN ===== -->
+  <div id="screen-menu" class="screen">
+    <div class="menu-box">
+      <button class="btn-back btn-back-top" onclick="goBackFromMenu()" data-i18n="nav.back">← Back</button>
+      <h1>🍺 Last Round</h1>
+      <p class="subtitle" data-i18n="landing.subtitle">The Card Game</p>
+
+      <div class="form-group">
+        <label data-i18n="menu.num_players">Number of Players</label>
+        <div class="btn-row" id="numPlayersGroup">
+          <button class="pick-btn active" data-val="2">2</button>
+          <button class="pick-btn" data-val="3">3</button>
+          <button class="pick-btn" data-val="4">4</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label data-i18n="menu.game_mode">Game Mode</label>
+        <div class="btn-row" id="modeGroup">
+          <button class="pick-btn active" data-val="passplay" data-i18n="menu.pass_play">Pass &amp; Play</button>
+          <button class="pick-btn" data-val="ai" data-i18n="menu.vs_computer">vs Computer</button>
+        </div>
+      </div>
+
+      <div id="playerNamesSection" class="form-group">
+        <label data-i18n="menu.player_names">Player Names</label>
+        <div id="playerNameInputs"></div>
+      </div>
+
+      <div class="form-group">
+        <label data-i18n="menu.table_design">Table Design <span class="design-wins-hint" id="designWinsHint"></span></label>
+        <div id="designPicker" class="design-picker"></div>
+      </div>
+
+      <div class="form-group">
+        <button id="drinkingModeToggle" class="toggle-btn" onclick="toggleDrinkingMode()">🍺 Drinking Mode: OFF</button>
+      </div>
+
+      <button class="btn-main" id="btnStartGame" data-i18n="menu.start_game">Start Game</button>
+      <div class="menu-btn-row">
+        <button class="btn-leaderboard" onclick="showLeaderboard()" data-i18n="menu.leaderboard">🏆 Leaderboard</button>
+        <button class="btn-how-to-play" onclick="startMenuTutorial()" data-i18n="menu.how_to_play">📜 How to Play</button>
+      </div>
+      <button class="btn-online" onclick="showOnlineMenu()" data-i18n="menu.play_online">🌐 Play Online</button>
+      <button class="btn-lang-pick" onclick="openLangPicker()" data-i18n="menu.language">🌐 Language</button>
+      <button class="admin-entry-btn" onclick="openAdminGate()" title="Admin">🔐</button>
+      <button class="btn-switch-account" onclick="switchAccount()" data-i18n="menu.switch_account">⇄ Switch Account</button>
+      <button class="btn-terms-fixed" onclick="showTerms()" data-i18n="menu.terms">Terms &amp; Conditions</button>
+      <button class="btn-feedback-menu" onclick="showFeedbackModal('menu')" title="Leave feedback">💬 Feedback</button>
+    </div>
+  </div>
+
+  <!-- ===== LEADERBOARD SCREEN ===== -->
+  <div id="screen-leaderboard" class="screen">
+    <div class="leaderboard-box">
+      <button class="btn-back btn-back-top" onclick="showScreen('menu')" data-i18n="nav.back">← Back</button>
+      <div class="lb-header">
+        <div class="lb-title-icon">🍺</div>
+        <div id="brawlName" class="brawl-name" data-i18n="lb.loading">Loading...</div>
+        <div id="brawlDays" class="brawl-days"></div>
+      </div>
+      <div class="lb-tabs">
+        <button class="lb-tab lb-tab-active" id="tabBrawl" onclick="showLbTab('brawl')" data-i18n="lb.tab_brawl">🍺 Brawl</button>
+        <button class="lb-tab" id="tabHof" onclick="showLbTab('hof')" data-i18n="lb.tab_hof">🏆 Hall of Fame</button>
+        <button class="lb-tab" id="tabSpudd" onclick="showLbTab('spudd')" data-i18n="lb.tab_spudd">🥔 Spudd Kings</button>
+        <button class="lb-tab" id="tabRing" onclick="showLbTab('ring')" data-i18n="lb.tab_ring">💍 Ring Bearers</button>
+        <button class="lb-tab" id="tabScarred" onclick="showLbTab('scarred')" data-i18n="lb.tab_scarred">🗡️ The Scarred</button>
+      </div>
+      <div id="leaderboardEntries" class="lb-entries"></div>
+      <div id="hofEntries" class="lb-entries hidden"></div>
+      <div id="spuddEntries" class="lb-entries hidden"></div>
+      <div id="ringEntries" class="lb-entries hidden"></div>
+      <div id="scarredEntries" class="lb-entries hidden"></div>
+    </div>
+  </div>
+
+  <!-- ===== ONLINE SCREEN ===== -->
+  <div id="screen-online" class="screen">
+    <div class="online-box">
+      <h2 data-i18n="online.title">🌐 Play Online</h2>
+      <p class="subtitle" data-i18n="online.subtitle">Up to 4 players · same room code</p>
+
+      <div class="form-group">
+        <label data-i18n="online.your_name">Your Name</label>
+        <div class="name-input-row">
+          <div class="avatar-wrap avatar-sm league-rookie" id="onlineAvatarBtn" title="Pick avatar" style="cursor:pointer"
+               onclick="openAvatarPicker(event, () => document.getElementById('onlinePlayerName').value.trim() || 'Player 1', em => { document.getElementById('onlineAvatarBtn').querySelector('.avatar-inner').textContent = em; })">
+            <div class="avatar-inner">🎲</div>
+          </div>
+          <input type="text" id="onlinePlayerName" class="text-input" placeholder="Enter your name" maxlength="20"
+                 oninput="(function(el){ const n=el.value.trim()||'Player 1'; document.getElementById('onlineAvatarBtn').querySelector('.avatar-inner').textContent=getAvatar(n); setMyName(n); })(this)">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label data-i18n="online.players_in_room">Players in room</label>
+        <div class="btn-row" id="onlineNumPlayersGroup">
+          <button class="pick-btn active" data-val="2">2</button>
+          <button class="pick-btn" data-val="3">3</button>
+          <button class="pick-btn" data-val="4">4</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button id="onlineDrinkingToggle" class="toggle-btn" onclick="toggleOnlineDrinkingMode()">🍺 Drinking Mode: OFF</button>
+      </div>
+
+      <button class="btn-main" onclick="createRoom()" data-i18n="online.create_room">🍺 Create Room</button>
+      <button class="btn-secondary" onclick="onlineShowJoin()" data-i18n="online.join_room">🔑 Join Room</button>
+
+      <div id="joinCodeSection" class="hidden join-code-section">
+        <input type="text" id="onlineJoinCodeField" class="text-input join-code-input"
+          placeholder="Room code e.g. BEER42" maxlength="8" style="text-transform:uppercase">
+        <button class="btn-main" onclick="joinRoom()" data-i18n="online.join_btn">Join ▶</button>
+        <div id="joinError" class="join-error hidden"></div>
+      </div>
+
+      <button class="btn-back" onclick="showScreen('menu')" data-i18n="nav.back">← Back</button>
+    </div>
+  </div>
+
+  <!-- ===== LOBBY SCREEN ===== -->
+  <div id="screen-lobby" class="screen">
+    <div class="lobby-box">
+      <div class="lobby-header">
+        <h2>🍺 Last Round</h2>
+        <p class="lobby-subtitle">Share the code with your friends</p>
+      </div>
+      <div class="lobby-code-area">
+        <div class="lobby-code-label" data-i18n="lobby.room_code">Room Code</div>
+        <div class="lobby-code" id="lobbyCode">----</div>
+        <button class="btn-copy" id="copyCodeBtn" onclick="copyRoomCode()" data-i18n="lobby.copy">📋 Copy</button>
+      </div>
+      <div id="lobbyPlayerList" class="lobby-player-list"></div>
+      <div id="lobbyWaitMsg" class="lobby-wait-msg" data-i18n="lobby.waiting">⌛ Waiting for host to start the game...</div>
+      <button class="btn-main" id="lobbyStartBtn" onclick="startOnlineGame()" style="display:none" data-i18n="lobby.start_game">▶ Start Game</button>
+      <button class="btn-back" onclick="leaveRoom()" data-i18n="lobby.leave_room">← Leave Room</button>
+    </div>
+  </div>
+
+  <!-- ===== SETUP SCREEN ===== -->
+  <div id="screen-setup" class="screen">
+    <div class="setup-box">
+      <button class="btn-back btn-back-top" onclick="showScreen('menu')" data-i18n="nav.back">← Back</button>
+      <h2 id="setupTitle">Player 1 — Choose your 3 face-up cards</h2>
+      <p class="setup-hint" data-i18n="setup.hint">Pick exactly 3 cards from your hand to place face-up on the table. Everyone can see these.</p>
+
+      <div class="setup-areas">
+        <div class="setup-zone">
+          <div class="zone-label" data-i18n="setup.your_hand">Your Hand (tap to move)</div>
+          <div id="setupHand" class="card-row"></div>
+        </div>
+        <div class="setup-zone">
+          <div class="zone-label">Face-Up Cards (<span id="faceUpCount">0</span>/3)</div>
+          <div id="setupFaceUp" class="card-row"></div>
+        </div>
+      </div>
+
+      <button class="btn-main" id="btnConfirmSetup">Confirm (0/3 selected)</button>
+    </div>
+  </div>
+
+  <!-- ===== PASS SCREEN ===== -->
+  <div id="screen-pass" class="screen">
+    <div class="pass-box">
+      <button class="btn-back btn-back-top" onclick="abandonGame()" data-i18n="nav.back">← Back</button>
+      <div class="pass-icon">🙈</div>
+      <h2 id="passTitle">Pass to Player 2</h2>
+      <p id="passBody">Hand the device to <strong id="passName">Player 2</strong>.<br>Don't peek!</p>
+      <button class="btn-main" id="btnPassReady" data-i18n="pass.ready">I'm ready</button>
+    </div>
+  </div>
+
+  <!-- ===== GAME SCREEN ===== -->
+  <div id="screen-game" class="screen">
+
+    <div id="gameLog" class="game-log">
+      <div class="log-header" data-i18n="game.log_header">📋 Moves</div>
+      <div id="logEntries"></div>
+    </div>
+
+    <div class="game-main">
+      <button class="btn-leave-game" onclick="leaveGame()" data-i18n="nav.leave">← Leave</button>
+      <div id="onlineStatusBadge" class="online-status-badge hidden"></div>
+      <div id="aiIQBadge" class="ai-iq-badge hidden"></div>
+      <div id="streakBadge" class="streak-badge hidden"></div>
+      <div id="topPlayers" class="other-players-area"></div>
+
+      <div id="centerArea" class="center-area">
+
+        <!-- Play pile pushed up toward opponents, fills available space -->
+        <div class="play-pile-area">
+          <div id="playPileTooltip" class="play-pile-tooltip hidden" data-i18n="game.play_anything">🌀 Play anything!</div>
+          <div class="play-pile-label"><span data-i18n="game.play_pile">Play Pile</span> <span class="pile-tap-hint" data-i18n="game.tap_to_peek">tap to peek</span></div>
+          <div class="play-pile-stack">
+            <div id="pileGhosts" class="pile-ghosts"></div>
+            <div id="burnDeckDisplay" class="play-pile-card burn-empty" onclick="onPileClick('play')">
+              <span class="play-pile-empty-text" data-i18n="game.empty">Empty</span>
+            </div>
+          </div>
+          <div id="requirementInfo" class="requirement-info"></div>
+
+          <div id="actionReveal" class="action-reveal hidden">
+            <div class="action-reveal-label" id="actionRevealLabel" data-i18n="game.action_card">Action Card!</div>
+            <div id="actionRevealCard"></div>
+            <div class="action-reveal-effect" id="actionRevealEffect"></div>
+          </div>
+
+          <div id="blindReveal" class="blind-reveal hidden">
+            <div class="blind-reveal-label" data-i18n="game.blind_revealed">🂠 Blind card revealed!</div>
+            <div id="blindRevealCard"></div>
+          </div>
+        </div>
+
+        <!-- Compact bottom bar: draw | turn info | burn — no overlap possible -->
+        <div class="center-bottom-row">
+          <div class="center-side-pile">
+            <div id="playDeckDisplay" class="pile-visual deck-back">
+              <span id="playDeckCount">52</span>
+            </div>
+            <div class="pile-label" data-i18n="game.draw">Draw</div>
+            <button id="rulesToggle" class="rules-toggle-btn" onclick="toggleRules()" data-i18n="game.rules">📖 Rules</button>
+          </div>
+
+          <div class="game-info">
+            <div id="gameMessage" class="game-message"></div>
+            <div id="turnInfo" class="turn-info"></div>
+            <div id="turnTimer" class="turn-timer"></div>
+          </div>
+
+          <div class="center-side-pile">
+            <div id="burnPileDisplay" class="pile-visual side-pile-empty" onclick="onPileClick('burn')">
+              <span id="burnPileCount">0</span>
+            </div>
+            <div class="pile-label"><span data-i18n="game.burned">🔥 Burned</span> <span class="pile-tap-hint" data-i18n="game.peek">peek</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="bottomPlayer" class="bottom-player-area">
+        <div class="bottom-header">
+          <div class="avatar-emote-wrap">
+            <div id="bottomAvatarArea"></div>
+            <button id="emojiPickerBtn" class="emoji-picker-btn" onclick="toggleEmojiPicker(event)" title="Send reaction">😄</button>
+          </div>
+          <div class="bottom-name-stack">
+            <span id="bottomPlayerName" class="bottom-player-name"></span>
+            <span id="phaseIndicator" class="phase-indicator"></span>
+          </div>
+        </div>
+
+        <div class="hand-section">
+          <div class="zone-label-sm hand-label" id="handLabel">✋ Your Hand — tap to play</div>
+          <div id="myHand" class="card-row hand-row"></div>
+        </div>
+
+        <div id="actionButtons" class="action-buttons">
+          <button class="btn-action btn-play" id="btnPlay" onclick="onPlayClicked()" data-i18n="game.play_btn">▶ Play</button>
+          <button class="btn-action btn-play-all hidden" id="btnPlayAll">▶ Play All</button>
+          <button class="btn-action btn-sort hidden" id="btnSort" onclick="onSortHand()" data-i18n="game.sort_btn">⇅ Sort</button>
+          <button class="btn-action btn-pickup" id="btnPickUp" onclick="onPickUpClicked()" data-i18n="game.pickup_btn">⬆ Pick Up</button>
+        </div>
+
+        <div class="bottom-zones">
+          <div class="player-slot-zone">
+            <div class="zone-label-sm" data-i18n="game.blind_zone">🂠 Blind</div>
+            <div id="myBlind" class="card-row-sm"></div>
+          </div>
+          <div class="player-slot-zone">
+            <div class="zone-label-sm" data-i18n="game.faceup_zone">🂡 Face-Up</div>
+            <div id="myFaceUp" class="card-row-sm"></div>
+          </div>
+        </div>
+        <button class="btn-terms-game" onclick="showTerms()">Terms &amp; Conditions</button>
+      </div>
+
+      <!-- TUTORIAL OVERLAY (inside game-main so centering works correctly) -->
+      <div id="tutorialOverlay" class="tutorial-overlay hidden">
+        <div id="tutorialCard" class="tutorial-card">
+          <div class="tutorial-progress" id="tutorialProgress">1 of 12</div>
+          <div class="tutorial-title" id="tutorialTitle"></div>
+          <div class="tutorial-text" id="tutorialText"></div>
+          <button class="tutorial-next-btn" id="tutorialNextBtn" onclick="nextTutorialStep()" data-i18n="tut.next">Next →</button>
+          <button class="tutorial-skip-btn" onclick="endTutorial()" data-i18n="tut.skip">Skip tutorial</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="demoOverlay" class="demo-overlay hidden">
+      <div class="demo-badge">DEMO</div>
+      <div class="demo-hint" data-i18n="game.demo_hint">Tap anywhere to play</div>
+    </div>
+
+    <div id="pilePreview" class="pile-preview hidden">
+      <div id="pilePreviewTitle" class="pile-preview-title">Play Pile — last 5</div>
+      <div id="pilePreviewCards" class="pile-preview-cards"></div>
+    </div>
+
+    <div id="emojiPickerPanel" class="emoji-picker-panel hidden"></div>
+    <div id="reactionDisplay" class="reaction-display hidden">
+      <div class="reaction-bubble">
+        <span id="reactionEmoji" class="reaction-emoji"></span>
+        <span id="reactionName"  class="reaction-name"></span>
+      </div>
+    </div>
+
+    <div id="megaBurn" class="mega-burn hidden">
+      <div class="mega-burn-inner">
+        <div class="mega-burn-emoji">🥔🔥🥔</div>
+        <div class="mega-burn-text">MEGA BURN!</div>
+        <div class="mega-burn-emoji">🔥🥔🔥</div>
+      </div>
+    </div>
+
+    <div id="win-overlay" class="win-overlay hidden">
+      <div class="win-overlay-box">
+        <div class="win-title" data-i18n="game.last_round">Last Round!</div>
+        <div id="podiumList" class="podium-list"></div>
+        <div id="winStreakBanner" class="win-streak-banner hidden"></div>
+        <div id="winBlindCards" class="win-blind-reveal"></div>
+        <div id="winStatCard" class="win-stat-card hidden"></div>
+        <div id="winButtons" class="win-buttons"></div>
+      </div>
+    </div>
+    </div>
+
+
+  </div>
+
+  <!-- ===== FEEDBACK MODAL ===== -->
+  <div id="feedbackModal" class="feedback-modal hidden" onclick="if(event.target===this)closeFeedbackModal()">
+    <div class="feedback-box">
+      <div class="feedback-title">💬 Leave Feedback</div>
+      <div class="feedback-sub">Help us improve Last Round</div>
+      <div class="feedback-moods" id="feedbackMoods">
+        <button class="mood-btn" data-mood="😍" onclick="selectMood(this)">😍</button>
+        <button class="mood-btn" data-mood="👍" onclick="selectMood(this)">👍</button>
+        <button class="mood-btn" data-mood="😐" onclick="selectMood(this)">😐</button>
+        <button class="mood-btn" data-mood="👎" onclick="selectMood(this)">👎</button>
+      </div>
+      <textarea id="feedbackText" class="feedback-textarea" placeholder="Suggestions, bugs, anything... (optional)" maxlength="500" rows="4"></textarea>
+      <div class="feedback-char" id="feedbackChar">0 / 500</div>
+      <div class="feedback-btns">
+        <button class="btn-main" onclick="submitFeedback()">Send 🍺</button>
+        <button class="btn-main btn-outline" onclick="closeFeedbackModal()">Skip</button>
+      </div>
+      <div id="feedbackThanks" class="feedback-thanks hidden">Thanks! Your feedback means a round on us 🍺</div>
+    </div>
+  </div>
+
+  <!-- ===== AUTH: CREATE ACCOUNT ===== -->
+  <div id="authCreatePanel" class="auth-panel hidden">
+    <div class="auth-inner">
+      <div class="auth-logo">🍺</div>
+      <div id="authCreateTitle" class="auth-title" data-i18n="auth.create_title">Create Your Account</div>
+      <div id="authCreateSubtitle" class="auth-subtitle" data-i18n="auth.create_subtitle">Choose your pub identity</div>
+
+      <!-- Step 1: Identity -->
+      <div id="authCreateStep1">
+        <div id="authCreateAvatarPreview" class="reg-avatar-preview">🎲</div>
+        <div id="authCreateAvatarGrid" class="reg-avatar-grid"></div>
+        <label class="reg-label" data-i18n="auth.your_name">Your Name</label>
+        <input type="text" id="authCreateNameInput" class="text-input reg-name-input"
+               maxlength="16" placeholder="Enter your name" data-i18n-placeholder="auth.enter_name"
+               onkeydown="if(event.key==='Enter')authCreateNext()">
+        <div id="authCreateError" class="reg-error hidden"></div>
+        <div class="reg-warning">
+          <span class="reg-warning-icon">⚠️</span>
+          <div class="reg-warning-text">Your name and avatar <strong>cannot be changed</strong> after registration. Choose carefully.</div>
+        </div>
+        <button class="btn-main" onclick="authCreateNext()" data-i18n="auth.next">Next ▶</button>
+        <button class="btn-back" onclick="hideAuthCreate()" data-i18n="nav.back">← Back</button>
+      </div>
+
+      <!-- Step 2: Auth method -->
+      <div id="authCreateStep2" class="hidden">
+        <div class="auth-identity-row">
+          <span id="authCreateStep2Av" class="auth-id-av"></span>
+          <span id="authCreateStep2Name" class="auth-id-name"></span>
+        </div>
+        <div class="auth-method-label" data-i18n="auth.secure_account">Secure your account</div>
+        <button class="btn-google" onclick="registerWithGoogle()">
+          <svg class="google-icon" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z" fill="#4285F4"/>
+            <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18Z" fill="#34A853"/>
+            <path d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332Z" fill="#FBBC05"/>
+            <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 7.294C4.672 5.163 6.656 3.58 9 3.58Z" fill="#EA4335"/>
+          </svg>
+          <span data-i18n="auth.google">Continue with Google</span>
+        </button>
+        <div class="auth-or-divider"><span data-i18n="auth.or">or</span></div>
+        <input type="email" id="authCreateEmailInput" class="text-input" placeholder="Email address" data-i18n-placeholder="auth.email_placeholder">
+        <input type="password" id="authCreatePasswordInput" class="text-input" placeholder="Password (min 6 chars)" style="margin-top:8px" data-i18n-placeholder="auth.password_placeholder"
+               onkeydown="if(event.key==='Enter')registerWithEmail()">
+        <div id="authCreateError2" class="reg-error hidden"></div>
+        <button class="btn-main" onclick="registerWithEmail()" style="margin-top:10px" data-i18n="auth.create_btn">Create Account ▶</button>
+        <button class="btn-back" onclick="authCreateBackToStep1()" data-i18n="nav.back">← Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== AUTH: LOGIN ===== -->
+  <div id="authLoginPanel" class="auth-panel hidden">
+    <div class="auth-inner">
+      <div class="auth-logo">🔑</div>
+      <div class="auth-title" data-i18n="auth.welcome_back">Welcome Back</div>
+      <div class="auth-subtitle" data-i18n="auth.welcome_sub">Sign in to your Last Round account</div>
+
+      <button class="btn-google" onclick="loginWithGoogle()">
+        <svg class="google-icon" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z" fill="#4285F4"/>
+          <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18Z" fill="#34A853"/>
+          <path d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332Z" fill="#FBBC05"/>
+          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 7.294C4.672 5.163 6.656 3.58 9 3.58Z" fill="#EA4335"/>
+        </svg>
+        <span data-i18n="auth.google">Continue with Google</span>
+      </button>
+      <div class="auth-or-divider"><span data-i18n="auth.or">or</span></div>
+      <input type="email" id="authLoginEmailInput" class="text-input" placeholder="Email address" data-i18n-placeholder="auth.email_placeholder">
+      <input type="password" id="authLoginPasswordInput" class="text-input" placeholder="Password" style="margin-top:8px" data-i18n-placeholder="auth.password_login"
+             onkeydown="if(event.key==='Enter')loginWithEmail()">
+      <div id="authLoginError" class="reg-error hidden"></div>
+      <button class="btn-main" onclick="loginWithEmail()" style="margin-top:10px" data-i18n="auth.signin_btn">Sign In ▶</button>
+      <button class="btn-back" onclick="hideAuthLogin()" data-i18n="nav.back">← Back</button>
+    </div>
+  </div>
+
+  <!-- ===== ADMIN: PIN GATE ===== -->
+  <div id="adminGatePanel" class="admin-gate-panel hidden">
+    <div class="admin-gate-inner">
+      <div class="admin-gate-icon">🔐</div>
+      <div class="admin-gate-title" id="adminGateTitle" data-i18n="admin.access">Admin Access</div>
+      <div class="admin-gate-sub" id="adminGateSub" data-i18n="admin.enter_pin">Enter your PIN to continue</div>
+      <input type="password" id="adminPinInput" class="text-input admin-pin-input"
+             placeholder="PIN" maxlength="32"
+             onkeydown="if(event.key==='Enter')submitAdminPin()">
+      <div id="adminPinError" class="admin-pin-error hidden"></div>
+      <button class="btn-main" onclick="submitAdminPin()" data-i18n="admin.unlock">Unlock ▶</button>
+      <button class="btn-back" onclick="closeAdminGate()" data-i18n="nav.cancel">← Cancel</button>
+    </div>
+  </div>
+
+  <!-- ===== ADMIN: PANEL ===== -->
+  <div id="adminPanel" class="admin-panel hidden">
+    <div class="admin-panel-inner">
+      <div class="admin-panel-header">
+        <span class="admin-panel-icon">🔐</span>
+        <span class="admin-panel-title" data-i18n="admin.panel_title">Admin Panel</span>
+        <button class="admin-close-btn" onclick="closeAdminPanel()">✕</button>
+      </div>
+      <div class="admin-actions">
+        <button class="admin-action-btn admin-warn" onclick="adminResetBrawl()">
+          <span class="aa-icon">🔄</span>
+          <div><div class="aa-label" data-i18n="admin.reset_brawl">Reset Current Brawl</div><div class="aa-desc" data-i18n="admin.reset_brawl_desc">Clears standings, keeps season archive</div></div>
+        </button>
+        <button class="admin-action-btn admin-danger" onclick="adminForceRollover()">
+          <span class="aa-icon">⏩</span>
+          <div><div class="aa-label" data-i18n="admin.force_rollover">Force Season Rollover</div><div class="aa-desc" data-i18n="admin.force_rollover_desc">Archives brawl now, starts next season</div></div>
+        </button>
+        <button class="admin-action-btn admin-danger" onclick="adminClearAllData()">
+          <span class="aa-icon">🗑️</span>
+          <div><div class="aa-label" data-i18n="admin.clear_data">Clear All Game Data</div><div class="aa-desc" data-i18n="admin.clear_data_desc">Deletes all profiles, stats &amp; seasons</div></div>
+        </button>
+        <button class="admin-action-btn" onclick="adminChangePin()">
+          <span class="aa-icon">🔑</span>
+          <div><div class="aa-label" data-i18n="admin.change_pin">Change Admin PIN</div><div class="aa-desc" data-i18n="admin.change_pin_desc">Update your admin password</div></div>
+        </button>
+      </div>
+      <button class="admin-logout-btn" onclick="adminLogout()" data-i18n="admin.lock_exit">🔓 Lock &amp; Exit</button>
+    </div>
+  </div>
+
+  <!-- ===== DUEL: SEND CHALLENGE PANEL ===== -->
+  <div id="duelSendPanel" class="duel-send-panel hidden">
+    <div class="duel-send-inner">
+      <div class="duel-send-icon">⚔️</div>
+      <div class="duel-send-title" data-i18n="duel.issue_challenge">Issue a Challenge</div>
+      <div class="duel-target-row">
+        <span id="duelTargetAvEl" class="duel-target-av"></span>
+        <span id="duelTargetNameEl" class="duel-target-name"></span>
+      </div>
+      <div class="duel-vs-line" data-i18n="duel.vs">vs</div>
+      <label class="duel-label" data-i18n="duel.your_name">Your name</label>
+      <input type="text" id="duelMyNameInput" class="text-input duel-name-input" maxlength="20" placeholder="Enter your name" data-i18n-placeholder="auth.enter_name">
+      <button class="btn-main" onclick="sendDuelChallenge()" data-i18n="duel.send_challenge">⚔️ Send Challenge</button>
+      <button class="btn-back" onclick="closeDuelSendPanel()" data-i18n="nav.cancel">← Cancel</button>
+    </div>
+  </div>
+
+  <!-- ===== DUEL: INCOMING CHALLENGE PANEL ===== -->
+  <div id="duelIncomingPanel" class="duel-incoming-panel hidden">
+    <div class="duel-incoming-inner">
+      <div class="duel-incoming-icon">⚔️</div>
+      <div class="duel-incoming-msg">
+        <span id="duelFromAv" class="duel-from-av"></span>
+        <span> </span><strong id="duelFromName"></strong>
+        <span class="duel-challenge-text" data-i18n="duel.challenges_you"> challenges you to a duel!</span>
+      </div>
+      <div class="duel-incoming-btns">
+        <button class="btn-main duel-accept-btn" onclick="acceptDuel()" data-i18n="duel.accept">⚔️ Accept</button>
+        <button class="btn-secondary duel-deny-btn" onclick="denyDuel()" data-i18n="duel.deny">✕ Deny</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TERMS & CONDITIONS ===== -->
+  <div id="termsPanel" class="terms-panel hidden">
+    <div class="terms-inner">
+      <div class="terms-header">
+        <span class="terms-header-title">📜 Last Round — Terms &amp; Conditions</span>
+        <button class="terms-close" onclick="hideTerms()">✕</button>
+      </div>
+      <div class="terms-body">
+        <p class="terms-version">Last updated: June 2026</p>
+
+        <h3>1. Account Inactivity</h3>
+        <p>Accounts that have not been used for more than <strong>30 days</strong> will be automatically signed out. Your progress and stats are preserved in the cloud — simply sign back in to continue playing.</p>
+        <p>Accounts inactive for more than <strong>6 months</strong> will have their profile, stats, and leaderboard entries <strong>permanently deleted</strong>. This action cannot be undone. We will not retain any personal data after deletion.</p>
+
+        <h3>2. Guest Play</h3>
+        <p>Playing as a Guest does not require an account. Guest sessions are temporary — your wins, stats, and identity are not saved and will be wiped when you navigate away from or close the game.</p>
+
+        <h3>3. Account Security</h3>
+        <p>You are responsible for the security of your account credentials. Last Round accounts created with email and password should use a strong, unique password. We recommend Google Sign-In for added security. We will never ask for your password via chat or email.</p>
+
+        <h3>4. Username &amp; Avatar</h3>
+        <p>Your chosen username and avatar are <strong>permanent</strong> and cannot be changed after registration. These form your identity on the Last Round leaderboard and in duels. Choose carefully.</p>
+
+        <h3>5. Fair Play</h3>
+        <p>Cheating, exploiting bugs, or using automation to manipulate leaderboard standings is prohibited and may result in immediate account removal without notice.</p>
+
+        <h3>6. Data &amp; Privacy</h3>
+        <p>Last Round stores your username, avatar, game statistics, and authentication data using Firebase (Google Cloud). If you register with email, that email is stored securely by Firebase Auth. Google Sign-In uses Google's own authentication infrastructure. We do not share your data with third parties.</p>
+
+        <h3>7. Changes to These Terms</h3>
+        <p>These terms may be updated as the game evolves. Continued use of Last Round after updates are posted constitutes acceptance of the revised terms. Significant changes will be communicated in-game.</p>
+
+        <p class="terms-footer">Last Round is an independent game project. For questions, reach out through the game community.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RULES PANEL ===== -->
+  <div id="rulesPanel" class="rules-panel hidden">
+    <div class="rules-header">
+      <span>📖 Last Round — Rules</span>
+      <button class="rules-close" onclick="toggleRules()">✕</button>
+    </div>
+    <div class="rules-body">
+      <p class="rules-intro">Empty all your cards — hand, face-up, then blind. The LAST player still holding cards is the loser!</p>
+      <table class="rules-table">
+        <tr><td>🔑 <strong>4</strong></td><td>The key — whoever holds it <em>must</em> open the game. No 4? The next lowest card opens instead.</td></tr>
+        <tr><td>🍺 <strong>2</strong></td><td>Fresh Pint — the next player can play absolutely anything.</td></tr>
+        <tr><td>🎯 <strong>3</strong></td><td>Bull's Eye — draw a replacement card. <strong>You keep your turn</strong> and can play again!</td></tr>
+        <tr><td>🪞 <strong>5</strong></td><td>Bar Mirror — copies the card below it. Does <em>not</em> count toward four-of-a-kind.</td></tr>
+        <tr><td>🤫 <strong>6</strong></td><td>Sneaky — slides under the 7 restriction when needed.</td></tr>
+        <tr><td>🔔 <strong>7</strong></td><td>Last Orders — next player must play a 4 or a 6 (going down).</td></tr>
+        <tr><td>🥔 <strong>8 / 9</strong></td><td>Burnt potato — the most worthless cards in the deck. Play them to get rid of them!</td></tr>
+        <tr><td>💥 <strong>10</strong></td><td>Keg Blast — blows up the play pile. You get another turn.</td></tr>
+        <tr><td>🤡👑💅🌟 <strong>J Q K A</strong></td><td>Court cards — must play equal or higher than the top card.</td></tr>
+        <tr><td>🔥 <strong>4-of-a-kind</strong></td><td>Four identical cards on top → pile burns! You play again. Four 🥔🥔🥔🥔 triggers MEGA BURN!</td></tr>
+        <tr><td>⬆ <strong>Pick Up</strong></td><td>Can't play? Pick up the whole pile. Use ⇅ Sort to tidy your new hand.</td></tr>
+        <tr><td>🂠 <strong>Blind</strong></td><td>Last resort — flip blind cards one at a time. A 🎁 gives another flip; anything unplayable makes you pick up!</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+    import { getDatabase, ref, set, get, onValue, update, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+    import {
+      getAuth, signInAnonymously, signInWithPopup, signInWithCredential, GoogleAuthProvider,
+      createUserWithEmailAndPassword, signInWithEmailAndPassword,
+      onAuthStateChanged, signOut
+    } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDsHgHYDNLgKRItMV5Hyg3h3GF6uVpj7RM",
+      authDomain: "last-round-card-game.firebaseapp.com",
+      databaseURL: "https://last-round-card-game-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "last-round-card-game",
+      storageBucket: "last-round-card-game.firebasestorage.app",
+      messagingSenderId: "289675752607",
+      appId: "1:289675752607:web:40d4139cba07a893a79eaa"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+    const googleProvider = new GoogleAuthProvider();
+
+    window._fb = { db, ref, set, get, onValue, update, remove, onDisconnect };
+    window._fbAuth = {
+      auth, googleProvider, GoogleAuthProvider,
+      signInAnonymously, signInWithPopup, signInWithCredential,
+      createUserWithEmailAndPassword, signInWithEmailAndPassword,
+      onAuthStateChanged, signOut
+    };
+  </script>
+
+  <!-- ===== DRINK OVERLAY ===== -->
+  <div id="drinkOverlay" class="drink-overlay hidden">
+    <div class="drink-inner">
+      <div class="drink-icon">🍺</div>
+      <div class="drink-title" id="drinkTitle"></div>
+      <div class="drink-sub" id="drinkSub"></div>
+    </div>
+  </div>
+
+  <!-- ===== SHAME OVERLAY ===== -->
+  <div id="shameOverlay" class="shame-overlay hidden">
+    <div class="shame-inner">
+      <div class="shame-hat">🪦</div>
+      <div class="shame-avatar" id="shameAvatar"></div>
+      <div class="shame-name" id="shameName"></div>
+      <div class="shame-subtitle" id="shameSubtitle"></div>
+      <div class="shame-skip">tap to continue</div>
+    </div>
+  </div>
+
+  <!-- ===== RECONNECT BANNER ===== -->
+  <div id="reconnectBanner" class="reconnect-banner hidden">
+    <span class="reconnect-icon">⚡</span>
+    <span class="reconnect-text" data-i18n="online.reconnecting">Connection lost — reconnecting…</span>
+    <span class="reconnect-spinner"></span>
+  </div>
+
+  <!-- ===== ESCAPE OVERLAY ===== -->
+  <div id="escapeOverlay" class="escape-overlay hidden">
+    <div class="escape-inner">
+      <div class="escape-avatar" id="escapeAvatar"></div>
+      <div class="escape-winner-name" id="escapeWinnerName"></div>
+      <div class="escape-card-wrap" id="escapeCardWrap"></div>
+      <div class="escape-msg" id="escapeMsg"></div>
+      <div class="escape-spud-badge" data-i18n="escape.spud_label"></div>
+      <div class="escape-skip-hint" data-i18n="escape.tap_skip">tap anywhere to skip</div>
+    </div>
+  </div>
+
+  <!-- ===== LANGUAGE PICKER MODAL ===== -->
+  <div id="langPickerModal" class="lang-picker-modal hidden" onclick="if(event.target===this)closeLangPicker()">
+    <div class="lang-picker-inner">
+      <div class="lang-picker-header">
+        <span>🌐 Language</span>
+        <button class="lang-picker-close" onclick="closeLangPicker()">✕</button>
+      </div>
+      <div class="lang-picker-grid">
+        <button class="lang-option" onclick="setLang('en')" data-lang="en">🇬🇧 English</button>
+        <button class="lang-option" onclick="setLang('es')" data-lang="es">🇪🇸 Español</button>
+        <button class="lang-option" onclick="setLang('fr')" data-lang="fr">🇫🇷 Français</button>
+        <button class="lang-option" onclick="setLang('de')" data-lang="de">🇩🇪 Deutsch</button>
+        <button class="lang-option" onclick="setLang('it')" data-lang="it">🇮🇹 Italiano</button>
+        <button class="lang-option" onclick="setLang('pt')" data-lang="pt">🇵🇹 Português</button>
+        <button class="lang-option" onclick="setLang('nl')" data-lang="nl">🇳🇱 Nederlands</button>
+        <button class="lang-option" onclick="setLang('ru')" data-lang="ru">🇷🇺 Русский</button>
+        <button class="lang-option" onclick="setLang('zh')" data-lang="zh">🇨🇳 中文</button>
+        <button class="lang-option" onclick="setLang('ja')" data-lang="ja">🇯🇵 日本語</button>
+        <button class="lang-option" onclick="setLang('ko')" data-lang="ko">🇰🇷 한국어</button>
+        <button class="lang-option" onclick="setLang('ar')" data-lang="ar">🇸🇦 العربية</button>
+        <button class="lang-option" onclick="setLang('hu')" data-lang="hu">🇭🇺 Magyar</button>
+        <button class="lang-option" onclick="setLang('ro')" data-lang="ro">🇷🇴 Română</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="translations.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

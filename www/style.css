@@ -2566,3 +2566,243 @@ body.game-active .emoji-picker-btn { display: flex; }
 }
 .landing-btn-demo { background: rgba(100,200,120,0.08); border-color: rgba(100,200,120,0.25); }
 .landing-btn-demo:hover { background: rgba(100,200,120,0.16); border-color: rgba(100,200,120,0.45); }
+
+/* ===== DESKTOP / BROWSER DISPLAY ===== */
+/* Game was designed for mobile portrait. On desktop we centre the game
+   panel at capped phone proportions and rearrange the layout so every
+   zone is visible and nothing overlaps. */
+@media (min-width: 600px) {
+  html, body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f3318;
+  }
+
+  /* ── Game frame ──────────────────────────────────────── */
+  #screen-game {
+    max-height: min(100svh - 16px, 820px);
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow:
+      0 24px 64px rgba(0,0,0,0.65),
+      0 0 0 1px rgba(255,255,255,0.07),
+      inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+
+  /* ── Moves log: pinned top-left, overlapping topPlayers edge ── */
+  .game-log {
+    position: absolute;
+    left: 36px;
+    top: 33px;
+    width: 85px;
+    height: 148px;
+    transform: none;
+    z-index: 15;
+    background: rgba(0,0,0,0.58);
+    border-radius: 8px;
+    padding: 5px 4px 6px;
+  }
+  #logEntries {
+    max-height: 116px;
+    justify-content: flex-end;
+  }
+
+  /* ── game-main: reserve top strip for the absolute Leave btn ─ */
+  .game-main {
+    padding-top: 30px;
+  }
+
+  /* ── Opponent bar: always clearly visible ────────────── */
+  .other-players-area {
+    min-height: 60px;
+    align-items: center;
+    padding: 4px 6px;
+  }
+  .opponent-block {
+    padding: 5px 10px;
+    min-width: 100px;
+  }
+  .opponent-name  { font-size: 0.8rem; font-weight: 800; }
+  .opponent-phase { font-size: 0.66rem; }
+  .mini-card      { width: 20px; height: 30px; }
+
+  /* ── Turn / game info: pull out of center-bottom-row and
+       pin to the top-right corner of game-main as a badge ─ */
+  .game-info {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    z-index: 20;
+    background: rgba(0,0,0,0.6);
+    border: 1px solid rgba(240,192,64,0.25);
+    border-radius: 8px;
+    padding: 3px 10px 4px;
+    text-align: right;
+    backdrop-filter: blur(6px);
+    max-width: 200px;
+  }
+  /* Override the fixed-size styles that were set for mobile */
+  .game-message {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #f0c040;
+    min-height: unset;
+    height: auto;
+    width: auto;
+    transform: none;
+    position: static;
+    z-index: auto;
+    line-height: 1.35;
+    padding: 0;
+  }
+  .turn-info  { font-size: 0.64rem; color: #aed6b0; font-weight: 600; }
+  .turn-timer { font-size: 0.68rem; min-height: unset; }
+
+  /* ── Center area: make it a positioning context for req-info ─ */
+  .center-area {
+    position: relative;
+    gap: 3px;
+    padding: 5px 5px 3px;
+  }
+
+  /* ── Play pile: balanced size ────────────────────────── */
+  .play-pile-card { width: 118px; height: 165px; }
+  .burn-top-icon  { font-size: 3rem; }
+  .burn-top-small { font-size: 0.85rem; }
+  .side-card-icon { font-size: 1rem; }
+  .play-pile-label { font-size: 0.6rem; letter-spacing: 0.5px; }
+  .pile-tap-hint  { font-size: 0.54rem; }
+
+  /* ── Pile ghost depth ─────────────────────────────────── */
+  .pile-ghost { border-radius: 9px; }
+
+  /* ── Draw / Burn piles: centre-bottom-row now just those two ─ */
+  .center-bottom-row {
+    justify-content: space-between;
+    padding: 0 6px 3px;
+    gap: 4px;
+  }
+  .pile-visual { width: 56px; height: 92px; font-size: 0.88rem; }
+  .pile-label  { font-size: 0.6rem; margin-top: 2px; }
+  .rules-toggle-btn {
+    font-size: 0.56rem;
+    padding: 2px 6px;
+    margin-top: 3px;
+    border-radius: 5px;
+  }
+  /* Burn pile vertical offset: scale down to match smaller visual */
+  #burnPileDisplay { transform: translateY(-16px); }
+  #burnPileDisplay.side-pile-card { transform: translateY(-16px) rotate(5deg); }
+
+  /* ── Requirement info: push to bottom of play-pile-area and
+       strip its own box so it lives inside the center-area dark
+       background rather than floating as a separate panel ──── */
+  .requirement-info {
+    margin-top: auto;
+    width: 100%;
+    padding: 6px 14px 8px;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+  .req-line1 { font-size: 1.05rem; font-weight: 900; letter-spacing: 0.05em; }
+  .req-line2 { font-size: 0.78rem; font-weight: 700; }
+
+  /* ── Bottom player: grid layout for clean sections ─── */
+  .bottom-player-area {
+    padding: 5px 8px 5px;
+    gap: 4px;
+  }
+
+  /* Header: avatar + name left-aligned, tight */
+  .bottom-header {
+    justify-content: flex-start;
+    gap: 7px;
+    flex-wrap: nowrap;
+  }
+  .avatar-md          { --av-size: 28px; --av-font: 14px; }
+  .avatar-emote-wrap  { flex-direction: row; align-items: center; gap: 3px; }
+  .emoji-picker-btn   { width: 22px; height: 22px; font-size: 0.8rem; margin-top: 0; padding: 0; }
+  .bottom-player-name { font-size: 0.88rem; font-weight: 800; color: #f0c040; }
+  .phase-indicator    { font-size: 0.6rem; }
+
+  /* Hand section */
+  .hand-section  { padding: 4px 5px 3px; }
+  .hand-label    { font-size: 0.68rem; font-weight: 700; margin-bottom: 1px; }
+  .hand-row      { min-height: 60px; gap: 3px; padding: 2px 2px 5px; }
+  .card      { width: 46px; height: 64px; padding: 3px; }
+  .card-back { width: 46px; height: 64px; }
+  .card-top, .card-bot { font-size: 0.58rem; }
+  .card-mid  { font-size: 1.3rem; }
+
+  /* Action buttons: single slim row */
+  .action-buttons { gap: 5px; margin-top: 1px; }
+  .btn-action { padding: 6px 13px; font-size: 0.8rem; font-weight: 700; border-radius: 7px; }
+
+  /* ── Blind + Face-up: compact horizontal inline strip ─
+     Label sits beside the cards, everything on one line   */
+  .bottom-zones {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin-top: 0;
+    padding: 2px 4px 1px;
+    background: rgba(0,0,0,0.18);
+    border-radius: 7px;
+  }
+  .player-slot-zone {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+  }
+  .zone-label-sm {
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: #aed6b0;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 0;
+    white-space: nowrap;
+  }
+  .card-row-sm { gap: 2px; flex-wrap: nowrap; }
+
+  /* Tiny face-up and blind cards */
+  #myFaceUp .card, #myBlind .card {
+    width: 24px !important;
+    height: 34px !important;
+    padding: 1px !important;
+    border-radius: 3px !important;
+    box-shadow: 1px 2px 4px rgba(0,0,0,0.45) !important;
+  }
+  #myFaceUp .card-mid  { font-size: 0.6rem; }
+  #myFaceUp .card-top  { font-size: 0.36rem; }
+  #myFaceUp .card-bot  { display: none; }
+  #myBlind  .card-top  { font-size: 0.36rem; }
+  #myBlind  .card-bot  { display: none; }
+  /* Blind cards render as .card-back in the table zone */
+  #myBlind .card-back {
+    width: 24px !important;
+    height: 34px !important;
+    border-radius: 3px !important;
+    border-width: 2px !important;
+  }
+  .hand-blind-card { width: 24px; height: 34px; border-radius: 3px; }
+}
+
+/* ── Tighter at shorter viewport heights ────────────── */
+@media (min-width: 600px) and (max-height: 760px) {
+  #screen-game    { max-height: calc(100svh - 12px); }
+  .play-pile-card { width: 100px; height: 140px; }
+  .burn-top-icon  { font-size: 2.5rem; }
+  .pile-visual    { width: 50px; height: 78px; }
+  .bottom-player-area { padding: 4px 6px 5px; gap: 2px; }
+  .hand-row       { min-height: 58px; }
+  .card      { width: 42px; height: 62px; }
+  .card-back { width: 42px; height: 62px; }
+  .btn-action { padding: 5px 10px; font-size: 0.78rem; }
+}

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReviewReply — AI Review Response Generator</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --border: #2a2d3e;
+    --gold: #f0c040; --green: #4caf78; --red: #e05555;
+    --text: #e0e0f0; --muted: #6b6b8a; --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height: 100vh; display: flex; align-items: center;
+    justify-content: center; padding: 24px;
+  }
+  .wrap { width: 100%; max-width: 680px; display: flex; flex-direction: column; gap: 16px; }
+  h1 { font-size: 1.6rem; color: var(--gold); }
+  p.sub { color: var(--muted); font-size: 0.88rem; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  label { display: block; color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+  input, textarea, select {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 7px; color: var(--text); font-size: 0.95rem;
+    padding: 10px 13px; outline: none; font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--gold); }
+  textarea { resize: vertical; min-height: 90px; }
+
+  .stars { display: flex; gap: 6px; margin-bottom: 4px; }
+  .star { font-size: 1.6rem; cursor: pointer; opacity: 0.35; transition: opacity 0.15s; }
+  .star.active { opacity: 1; }
+
+  button.primary {
+    width: 100%; padding: 13px; background: var(--gold); color: #111;
+    border: none; border-radius: 8px; font-size: 1rem; font-weight: 700;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  button.primary:hover { opacity: 0.88; }
+  button.primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .responses { display: flex; flex-direction: column; gap: 12px; }
+  .response-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px; position: relative;
+  }
+  .response-card .tone-badge {
+    display: inline-block; font-size: 0.72rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.07em;
+    padding: 2px 8px; border-radius: 10px; margin-bottom: 10px;
+  }
+  .tone-empathetic .tone-badge { background: rgba(76,175,120,0.2); color: var(--green); }
+  .tone-professional .tone-badge { background: rgba(240,192,64,0.2); color: var(--gold); }
+  .tone-brief .tone-badge { background: rgba(107,107,138,0.2); color: var(--muted); }
+  .response-text { font-size: 0.92rem; line-height: 1.65; white-space: pre-wrap; }
+  .copy-btn {
+    position: absolute; top: 12px; right: 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 4px 10px; font-size: 0.78rem;
+    color: var(--muted); cursor: pointer; transition: color 0.15s;
+  }
+  .copy-btn:hover { color: var(--gold); border-color: var(--gold); }
+
+  .spinner { text-align: center; padding: 24px; color: var(--muted); }
+  .error { color: var(--red); font-size: 0.88rem; padding: 8px 0; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <h1>ReviewReply</h1>
+    <p class="sub">Paste a review. Get 3 ready-to-use responses in seconds.</p>
+  </div>
+
+  <div class="card">
+    <label>Business Name</label>
+    <input id="biz" type="text" placeholder="e.g. Casa Verde Restaurant">
+
+    <label style="margin-top:14px;">Business Type</label>
+    <select id="type">
+      <option>Restaurant / Café</option>
+      <option>Retail Shop</option>
+      <option>Hotel / Accommodation</option>
+      <option>Fitness / Wellness</option>
+      <option>Medical / Dental</option>
+      <option>Software / App</option>
+      <option>Service Business</option>
+      <option>Other</option>
+    </select>
+
+    <label style="margin-top:14px;">Review Rating</label>
+    <div class="stars" id="stars">
+      <span class="star" data-v="1">★</span>
+      <span class="star" data-v="2">★</span>
+      <span class="star" data-v="3">★</span>
+      <span class="star" data-v="4">★</span>
+      <span class="star" data-v="5">★</span>
+    </div>
+
+    <label style="margin-top:14px;">Review Text</label>
+    <textarea id="review" placeholder="Paste the customer review here..."></textarea>
+
+    <label style="margin-top:14px;">Your API Key (Claude)</label>
+    <input id="apikey" type="password" placeholder="sk-ant-... (stays in your browser, never sent to us)">
+
+    <p style="color:var(--muted);font-size:0.78rem;margin-top:6px;">
+      Your API key is used directly in your browser. We never store or see it.
+      Get one at console.anthropic.com
+    </p>
+  </div>
+
+  <button class="primary" id="gen-btn" onclick="generate()">Generate Responses →</button>
+  <div class="error hidden" id="error"></div>
+  <div class="spinner hidden" id="spinner">Generating responses...</div>
+  <div class="responses hidden" id="results"></div>
+</div>
+
+<script>
+let rating = 0;
+
+document.querySelectorAll(".star").forEach(star => {
+  star.addEventListener("click", () => {
+    rating = parseInt(star.dataset.v);
+    document.querySelectorAll(".star").forEach((s, i) => {
+      s.classList.toggle("active", i < rating);
+    });
+  });
+});
+
+async function generate() {
+  const biz    = document.getElementById("biz").value.trim();
+  const type   = document.getElementById("type").value;
+  const review = document.getElementById("review").value.trim();
+  const apikey = document.getElementById("apikey").value.trim();
+
+  if (!biz || !review || !apikey) {
+    showError("Fill in business name, review text, and API key.");
+    return;
+  }
+
+  document.getElementById("gen-btn").disabled = true;
+  document.getElementById("error").classList.add("hidden");
+  document.getElementById("spinner").classList.remove("hidden");
+  document.getElementById("results").classList.add("hidden");
+
+  const prompt = `You are a professional review response writer for "${biz}" (${type}).
+A customer left a ${rating || "unknown"}-star review.
+
+Review:
+"""
+${review}
+"""
+
+Write 3 distinct response options:
+1. EMPATHETIC — warm, personal, acknowledges feelings first
+2. PROFESSIONAL — polished, solution-focused, brand-appropriate
+3. BRIEF — 2-3 sentences max, direct but respectful
+
+Rules:
+- Never be defensive or argue with the customer
+- Always thank them for their feedback
+- If negative: offer a path to resolution (contact us, come back, we'll improve)
+- If positive: express genuine gratitude, invite them back
+- Match the tone to the business type
+- Do NOT start any response with "Thank you for your review" — it's cliché
+
+Format your response EXACTLY as:
+EMPATHETIC:
+[response]
+
+PROFESSIONAL:
+[response]
+
+BRIEF:
+[response]`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "x-api-key": apikey,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+        "anthropic-dangerous-direct-browser-calls": "true",
+      },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 800,
+        messages: [{ role: "user", content: prompt }],
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error?.message || `API error ${res.status}`);
+    }
+
+    const data = await res.json();
+    const text = data.content[0].text;
+    displayResults(text);
+  } catch (e) {
+    showError(`Error: ${e.message}`);
+  } finally {
+    document.getElementById("gen-btn").disabled = false;
+    document.getElementById("spinner").classList.add("hidden");
+  }
+}
+
+function displayResults(text) {
+  const sections = [
+    { key: "EMPATHETIC", cls: "tone-empathetic", label: "Empathetic" },
+    { key: "PROFESSIONAL", cls: "tone-professional", label: "Professional" },
+    { key: "BRIEF", cls: "tone-brief", label: "Brief" },
+  ];
+
+  const container = document.getElementById("results");
+  container.innerHTML = "";
+
+  sections.forEach(({ key, cls, label }) => {
+    const match = text.match(new RegExp(`${key}:\\s*([\\s\\S]*?)(?=\\n(?:EMPATHETIC|PROFESSIONAL|BRIEF):|$)`));
+    if (!match) return;
+    const content = match[1].trim();
+
+    const card = document.createElement("div");
+    card.className = `response-card ${cls}`;
+    card.innerHTML = `
+      <span class="tone-badge">${label}</span>
+      <button class="copy-btn" onclick="copyText(this, \`${content.replace(/`/g, "\\`")}\`)">Copy</button>
+      <div class="response-text">${content}</div>
+    `;
+    container.appendChild(card);
+  });
+
+  container.classList.remove("hidden");
+}
+
+function copyText(btn, text) {
+  navigator.clipboard?.writeText(text).then(() => {
+    btn.textContent = "Copied!";
+    setTimeout(() => btn.textContent = "Copy", 1500);
+  });
+}
+
+function showError(msg) {
+  const el = document.getElementById("error");
+  el.textContent = msg;
+  el.classList.remove("hidden");
+}
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-/* ===== RESET & BASE ===== */
+﻿/* ===== RESET & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
@@ -136,7 +136,7 @@ body {
   border: 3px solid #fff; box-shadow: 2px 3px 8px rgba(0,0,0,0.4); flex-shrink: 0;
 }
 
-/* Spud card (8/9) — subtle potato tan tint */
+/* Spud card (8/9) â€” subtle potato tan tint */
 .card.spud-card { background: #f5ead8; }
 .card.spud-card.selected { background: #f5ead8; }
 
@@ -151,7 +151,7 @@ body {
 .card-row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; min-height: 96px; align-items: flex-end; }
 .card-row-sm { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
 
-/* Hand row — horizontal scroll so many cards never wrap or push layout */
+/* Hand row â€” horizontal scroll so many cards never wrap or push layout */
 .hand-row {
   display: flex;
   flex-wrap: nowrap;
@@ -410,7 +410,7 @@ body {
   letter-spacing: 0.02em; line-height: 1.2;
 }
 
-/* Turn info — centre column of bottom bar */
+/* Turn info â€” centre column of bottom bar */
 .game-info { text-align: center; flex: 1; min-width: 0; }
 .game-message { font-size: 0.75rem; color: #f0c040; min-height: 28px; line-height: 1.3; padding: 2px; transform: translateY(-4px); width: 241px; height: 50px; position: relative; z-index: 50; }
 .turn-info { font-size: 0.72rem; color: #aed6b0; }
@@ -746,7 +746,7 @@ body {
 /* ===== CURRENT TURN HIGHLIGHT ===== */
 .opponent-block.active-turn { border: 2px solid #f0c040; }
 
-/* ===== MOBILE (≤540px wide) ===== */
+/* ===== MOBILE (â‰¤540px wide) ===== */
 @media (max-width: 540px) {
   #screen-game { padding: 3px; gap: 3px; }
 
@@ -807,11 +807,11 @@ body {
   /* Timer */
   .turn-timer { font-size: 0.72rem; }
 
-  /* Blind cards in hand bar — smaller on phone */
+  /* Blind cards in hand bar â€” smaller on phone */
   .hand-blind-card { width: 44px; height: 64px; }
 }
 
-/* Mobile portrait — narrow phones (≤430px) */
+/* Mobile portrait â€” narrow phones (â‰¤430px) */
 @media (max-width: 430px) {
   /* Shrink log to icon-only, free up horizontal space */
   .game-log { width: 0; padding: 0; overflow: hidden; border-radius: 0; }
@@ -1015,7 +1015,7 @@ body {
 .pile-preview-cards .card { cursor: default; flex-shrink: 0; }
 .pile-preview-cards .card:hover { transform: none; }
 
-/* ===== RULES TOGGLE BUTTON — under draw deck ===== */
+/* ===== RULES TOGGLE BUTTON â€” under draw deck ===== */
 .rules-toggle-btn {
   margin-top: 5px;
   width: 100%;
@@ -1034,7 +1034,7 @@ body {
 }
 .rules-toggle-btn:hover { background: rgba(210,175,105,0.32); transform: translateY(-1px); }
 
-/* ===== RULES PANEL — bottom sheet ===== */
+/* ===== RULES PANEL â€” bottom sheet ===== */
 .rules-panel {
   position: fixed;
   bottom: 0; left: 50%;
@@ -1439,7 +1439,7 @@ body {
 
 /* ===== CARD BACK DESIGNS ===== */
 
-/* Classic Pub — amber hops diamond grid on navy — confident, lived-in */
+/* Classic Pub â€” amber hops diamond grid on navy â€” confident, lived-in */
 .back-classic {
   background-color: #0e1f44;
   background-image:
@@ -1450,7 +1450,7 @@ body {
   box-shadow: inset 0 0 10px rgba(0,0,10,0.6);
 }
 
-/* Dark Forest — ink black + toxic green hex weave — ominous, feral */
+/* Dark Forest â€” ink black + toxic green hex weave â€” ominous, feral */
 .back-forest {
   background-color: #040d03;
   background-image:
@@ -1462,7 +1462,7 @@ body {
   box-shadow: inset 0 0 12px rgba(0,30,0,0.8);
 }
 
-/* Royal Gold — blood-red velvet + gold filigree — dripping in self-importance */
+/* Royal Gold â€” blood-red velvet + gold filigree â€” dripping in self-importance */
 .back-royal {
   background-color: #1a0008;
   background-image:
@@ -1474,7 +1474,7 @@ body {
   box-shadow: inset 0 0 14px rgba(80,0,10,0.7);
 }
 
-/* Midnight — deep void + electric indigo star-scatter — cold, merciless */
+/* Midnight â€” deep void + electric indigo star-scatter â€” cold, merciless */
 .back-midnight {
   background-color: #020210;
   background-image:
@@ -1486,7 +1486,7 @@ body {
   box-shadow: inset 0 0 16px rgba(0,0,30,0.9);
 }
 
-/* Inferno — char black + lava crack veins — chaotic, scorched, angry */
+/* Inferno â€” char black + lava crack veins â€” chaotic, scorched, angry */
 .back-inferno {
   background-color: #0d0100;
   background-image:
@@ -1498,7 +1498,7 @@ body {
   box-shadow: inset 0 0 14px rgba(80,10,0,0.8);
 }
 
-/* Pub Legend — void black + cycling chromatic shimmer — earned, legendary, insufferable */
+/* Pub Legend â€” void black + cycling chromatic shimmer â€” earned, legendary, insufferable */
 .back-legend {
   background-color: #030204;
   background-image:
@@ -1558,7 +1558,7 @@ body.theme-legend   { background: radial-gradient(ellipse at center, #0a040e 0%,
 /* ===== TUTORIAL OVERLAY ===== */
 .tutorial-overlay {
   position: absolute; inset: 0;
-  background: rgba(0,0,0,0); /* transparent — spotlight via z-index */
+  background: rgba(0,0,0,0); /* transparent â€” spotlight via z-index */
   z-index: 200; pointer-events: none;
 }
 .tutorial-overlay:not(.hidden) { pointer-events: all; }
@@ -1675,7 +1675,7 @@ body.game-active .emoji-picker-btn { display: flex; }
 .emoji-btn:hover  { background: rgba(255,255,255,0.1); transform: scale(1.35); }
 .emoji-btn:active { transform: scale(0.9); }
 
-/* Reaction display — centered overlay */
+/* Reaction display â€” centered overlay */
 .reaction-display {
   position: fixed; top: 38%; left: 50%; transform: translateX(-50%);
   z-index: 160; pointer-events: none; text-align: center;
@@ -2579,7 +2579,7 @@ body.game-active .emoji-picker-btn { display: flex; }
     background: #0f3318;
   }
 
-  /* ── Game frame ──────────────────────────────────────── */
+  /* â”€â”€ Game frame â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   #screen-game {
     max-height: min(100svh - 16px, 820px);
     border-radius: 28px;
@@ -2590,11 +2590,11 @@ body.game-active .emoji-picker-btn { display: flex; }
       inset 0 1px 0 rgba(255,255,255,0.06);
   }
 
-  /* ── Moves log: pinned top-left, overlapping topPlayers edge ── */
+  /* â”€â”€ Moves log: pinned top-left, overlapping topPlayers edge â”€â”€ */
   .game-log {
     position: absolute;
-    left: 36px;
-    top: 33px;
+    left: 32px;
+    top: 66px;
     width: 85px;
     height: 148px;
     transform: none;
@@ -2608,12 +2608,12 @@ body.game-active .emoji-picker-btn { display: flex; }
     justify-content: flex-end;
   }
 
-  /* ── game-main: reserve top strip for the absolute Leave btn ─ */
+  /* â”€â”€ game-main: reserve top strip for the absolute Leave btn â”€ */
   .game-main {
     padding-top: 30px;
   }
 
-  /* ── Opponent bar: always clearly visible ────────────── */
+  /* â”€â”€ Opponent bar: always clearly visible â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .other-players-area {
     min-height: 60px;
     align-items: center;
@@ -2627,8 +2627,8 @@ body.game-active .emoji-picker-btn { display: flex; }
   .opponent-phase { font-size: 0.66rem; }
   .mini-card      { width: 20px; height: 30px; }
 
-  /* ── Turn / game info: pull out of center-bottom-row and
-       pin to the top-right corner of game-main as a badge ─ */
+  /* â”€â”€ Turn / game info: pull out of center-bottom-row and
+       pin to the top-right corner of game-main as a badge â”€ */
   .game-info {
     position: absolute;
     top: 5px;
@@ -2659,14 +2659,14 @@ body.game-active .emoji-picker-btn { display: flex; }
   .turn-info  { font-size: 0.64rem; color: #aed6b0; font-weight: 600; }
   .turn-timer { font-size: 0.68rem; min-height: unset; }
 
-  /* ── Center area: make it a positioning context for req-info ─ */
+  /* â”€â”€ Center area: make it a positioning context for req-info â”€ */
   .center-area {
     position: relative;
     gap: 3px;
     padding: 5px 5px 3px;
   }
 
-  /* ── Play pile: balanced size ────────────────────────── */
+  /* â”€â”€ Play pile: balanced size â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .play-pile-card { width: 118px; height: 165px; }
   .burn-top-icon  { font-size: 3rem; }
   .burn-top-small { font-size: 0.85rem; }
@@ -2674,10 +2674,10 @@ body.game-active .emoji-picker-btn { display: flex; }
   .play-pile-label { font-size: 0.6rem; letter-spacing: 0.5px; }
   .pile-tap-hint  { font-size: 0.54rem; }
 
-  /* ── Pile ghost depth ─────────────────────────────────── */
+  /* â”€â”€ Pile ghost depth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .pile-ghost { border-radius: 9px; }
 
-  /* ── Draw / Burn piles: centre-bottom-row now just those two ─ */
+  /* â”€â”€ Draw / Burn piles: centre-bottom-row now just those two â”€ */
   .center-bottom-row {
     justify-content: space-between;
     padding: 0 6px 3px;
@@ -2691,13 +2691,15 @@ body.game-active .emoji-picker-btn { display: flex; }
     margin-top: 3px;
     border-radius: 5px;
   }
+  /* Play pile (burnDeck) vertical offset */
+  #burnDeckDisplay { transform: translateY(22px); }
   /* Burn pile vertical offset: scale down to match smaller visual */
   #burnPileDisplay { transform: translateY(-16px); }
   #burnPileDisplay.side-pile-card { transform: translateY(-16px) rotate(5deg); }
 
-  /* ── Requirement info: push to bottom of play-pile-area and
+  /* â”€â”€ Requirement info: push to bottom of play-pile-area and
        strip its own box so it lives inside the center-area dark
-       background rather than floating as a separate panel ──── */
+       background rather than floating as a separate panel â”€â”€â”€â”€ */
   .requirement-info {
     margin-top: auto;
     width: 100%;
@@ -2710,7 +2712,7 @@ body.game-active .emoji-picker-btn { display: flex; }
   .req-line1 { font-size: 1.05rem; font-weight: 900; letter-spacing: 0.05em; }
   .req-line2 { font-size: 0.78rem; font-weight: 700; }
 
-  /* ── Bottom player: grid layout for clean sections ─── */
+  /* â”€â”€ Bottom player: grid layout for clean sections â”€â”€â”€ */
   .bottom-player-area {
     padding: 5px 8px 5px;
     gap: 4px;
@@ -2741,7 +2743,7 @@ body.game-active .emoji-picker-btn { display: flex; }
   .action-buttons { gap: 5px; margin-top: 1px; }
   .btn-action { padding: 6px 13px; font-size: 0.8rem; font-weight: 700; border-radius: 7px; }
 
-  /* ── Blind + Face-up: compact horizontal inline strip ─
+  /* â”€â”€ Blind + Face-up: compact horizontal inline strip â”€
      Label sits beside the cards, everything on one line   */
   .bottom-zones {
     display: flex;
@@ -2794,7 +2796,7 @@ body.game-active .emoji-picker-btn { display: flex; }
   .hand-blind-card { width: 24px; height: 34px; border-radius: 3px; }
 }
 
-/* ── Tighter at shorter viewport heights ────────────── */
+/* â”€â”€ Tighter at shorter viewport heights â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (min-width: 600px) and (max-height: 760px) {
   #screen-game    { max-height: calc(100svh - 12px); }
   .play-pile-card { width: 100px; height: 140px; }
@@ -2806,3 +2808,23 @@ body.game-active .emoji-picker-btn { display: flex; }
   .card-back { width: 42px; height: 62px; }
   .btn-action { padding: 5px 10px; font-size: 0.78rem; }
 }
+
+/* ===== LAYOUT TWEAKS ===== */
+/* Play pile card always renders above ghost depth cards */
+.play-pile-stack {
+  isolation: isolate;
+}
+#burnDeckDisplay {
+  position: relative;
+  z-index: 2;
+  transform: translate(0px, -2px);
+}
+
+#requirementInfo {
+  transform: translate(0px, 21px);
+}
+
+#gameLog {
+  transform: translate(-14px, 101px);
+}
+

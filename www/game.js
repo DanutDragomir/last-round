@@ -1106,8 +1106,8 @@ function aiDoSetupForCurrentIdx() { aiDoSetup(); }
 // LOG & MESSAGES
 // ============================================================
 function addLog(msg) {
-  G.log.unshift(msg);
-  if (G.log.length > 30) G.log.pop();
+  G.log.push(msg);
+  if (G.log.length > 30) G.log.shift();
 }
 function showMsg(msg) {
   G.message = msg;

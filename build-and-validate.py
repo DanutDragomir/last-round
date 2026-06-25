@@ -36,7 +36,8 @@ def run_command(cmd: list, cwd: str = None) -> tuple[bool, str]:
             cwd=cwd or str(PROJECT_ROOT),
             capture_output=True,
             text=True,
-            timeout=600
+            timeout=600,
+            shell=os.name == "nt"
         )
         return result.returncode == 0, result.stdout + result.stderr
     except subprocess.TimeoutExpired:
@@ -53,10 +54,16 @@ def build_apk() -> tuple[bool, str]:
     if not KEYSTORE_PATH.exists():
         return False, f"Keystore not found: {KEYSTORE_PATH}"
 
-    # Run Gradle build
+    # Run Gradle build (use gradlew.bat on Windows)
+    android_dir = PROJECT_ROOT / "android"
+    if os.name == "nt":
+        gradle_path = str(android_dir / "gradlew.bat")
+    else:
+        gradle_path = str(android_dir / "gradlew")
+
     success, output = run_command(
-        ["gradlew", "bundleRelease"],
-        cwd=str(PROJECT_ROOT / "android")
+        [gradle_path, "bundleRelease"],
+        cwd=str(android_dir)
     )
 
     if not success:

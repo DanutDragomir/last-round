@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Firebase Hosting deployer using service account (no CLI auth needed).
  * Uses Firebase Hosting REST API v1beta1.
  */
@@ -8,7 +8,7 @@ const https = require('https');
 const crypto = require('crypto');
 const zlib = require('zlib');
 
-const SA_PATH  = 'D:\\Home\\Vault\\last-round-card-game-firebase-adminsdk-fbsvc-22ad50e10a.json';
+const SA_PATH  = 'D:\\Home\\Vault\\last-round-card-game-firebase-adminsdk-fbsvc-90cef74420.json';
 const WWW_DIR  = path.join(__dirname, 'www');
 const SITE_ID  = 'last-round-card-game';
 

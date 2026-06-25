@@ -42,6 +42,11 @@
     "season": {
       ".read": "auth != null",
       ".write": "auth != null"
+    },
+
+    "command-center": {
+      ".read": true,
+      ".write": false
     }
   }
 }

@@ -4672,6 +4672,10 @@ function _showUpdatePrompt(version, url) {
 // BOOT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize error monitoring (must be first)
+  if (typeof ErrorMonitor !== 'undefined') {
+    ErrorMonitor.init();
+  }
   if (typeof initLang === 'function') initLang();
   checkSeasonRollover();
   initMenu();

@@ -65,6 +65,17 @@
       }
     },
 
+    "errors": {
+      ".read": "auth != null",
+      "$sessionId": {
+        ".write": true,
+        "$errorId": {
+          ".read": "auth != null",
+          ".write": true
+        }
+      }
+    },
+
     "command-center": {
       ".read": true,
       ".write": false

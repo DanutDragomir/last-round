@@ -1,0 +1,67 @@
+name: Deploy Last Round
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'www/**'
+      - 'database.rules.json'
+      - 'firebase.json'
+      - '.github/workflows/deploy.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install Firebase CLI
+      run: npm install -g firebase-tools
+
+    - name: Lint JavaScript
+      run: |
+        node -c www/game.js
+        node -c www/error-monitor.js
+        node -c www/analytics.js
+
+    - name: Deploy to Firebase
+      env:
+        FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        FIREBASE_PROJECT: last-round-card-game
+      run: |
+        echo "$FIREBASE_SERVICE_ACCOUNT" > /tmp/service-account.json
+        export GOOGLE_APPLICATION_CREDENTIALS=/tmp/service-account.json
+        firebase deploy --only database,hosting --project $FIREBASE_PROJECT --force
+
+    - name: Verify Deployment
+      run: |
+        sleep 5  # Wait for CDN to propagate
+        curl -f https://last-round-card-game.web.app/ || exit 1
+        curl -f https://last-round-card-game.web.app/error-dashboard.html || exit 1
+        curl -f https://last-round-card-game.web.app/analytics-dashboard.html || exit 1
+
+    - name: Slack Notification
+      if: always()
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        payload: |
+          {
+            "text": "${{ job.status == 'success' && '✅ Last Round deployed' || '❌ Last Round deployment failed' }}",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "${{ job.status == 'success' && '✅ *Last Round Deployed*' || '❌ *Deployment Failed*' }}\nCommit: `${{ github.sha }}`\nAuthor: ${{ github.actor }}"
+                }
+              }
+            ]
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEPLOY_WEBHOOK }}

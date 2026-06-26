@@ -3001,12 +3001,26 @@ function showGetAppPrompt() {
   document.body.appendChild(modal);
 }
 
-function playAsGuest() {
-  localStorage.removeItem('lr_registered');
-  localStorage.removeItem('lr_my_name');
-  showScreen('menu');
-  initMenu();
-  initFirebaseSync();
+async function playAsGuest() {
+  try {
+    const { auth, signInAnonymously } = window._fbAuth;
+    const result = await signInAnonymously(auth);
+    window._fbUid = result.user.uid;
+    _authUser = result.user;
+    localStorage.setItem('lr_guest_mode', 'true');
+    localStorage.removeItem('lr_registered');
+    localStorage.removeItem('lr_my_name');
+    showScreen('menu');
+    initMenu();
+    initFirebaseSync();
+  } catch (err) {
+    console.error('Guest sign-in failed:', err);
+    alert('Could not start guest session. Please try again.');
+  }
+}
+
+function getRoomPath(code) {
+  return localStorage.getItem('lr_guest_mode') === 'true' ? `guests/${code}` : `rooms/${code}`;
 }
 
 async function switchAccount() {
@@ -3775,16 +3789,17 @@ async function createRoom() {
   const { db, ref, set: fbSet, onDisconnect: fbOnDc } = fb();
   const uid = window._fbUid;
   const code = generateRoomCode(name);
+  const roomPath = getRoomPath(code);
   try {
     const avatar = getAvatar(name);
-    await fbSet(ref(db, `rooms/${code}`), {
+    await fbSet(ref(db, roomPath), {
       status: 'lobby',
       config: { numPlayers, direction: 1, design: getBestDesign(), drinkingMode: menuConfig.onlineDrinkingMode || false },
       players: { 0: { name, uid, avatar, connected: true, lastSeen: Date.now() } },
       createdAt: Date.now(),
     });
-    fbOnDc(ref(db, `rooms/${code}`)).remove();
-    Object.assign(ONLINE, { active: true, isHost: true, roomCode: code, myIdx: 0, myName: name, numPlayers });
+    fbOnDc(ref(db, roomPath)).remove();
+    Object.assign(ONLINE, { active: true, isHost: true, roomCode: code, myIdx: 0, myName: name, numPlayers, isGuest: localStorage.getItem('lr_guest_mode') === 'true' });
     document.getElementById('lobbyCode').textContent = code;
     showScreen('lobby');
     listenLobby(code);
@@ -3798,8 +3813,9 @@ async function joinRoom() {
   const code = document.getElementById('onlineJoinCodeField')?.value?.trim().toUpperCase();
   if (!code) return;
   const { db, ref, get: fbGet, update: fbUp, onDisconnect: fbOnDc } = fb();
+  const roomPath = getRoomPath(code);
   try {
-    const snap = await fbGet(ref(db, `rooms/${code}`));
+    const snap = await fbGet(ref(db, roomPath));
     if (!snap.exists()) { setJoinError('Room not found'); return; }
     const room = snap.val();
     if (room.status !== 'lobby') { setJoinError('Game already in progress'); return; }
@@ -3807,9 +3823,9 @@ async function joinRoom() {
     if (taken.length >= room.config.numPlayers) { setJoinError('Room is full'); return; }
     const myIdx = Math.max(...taken) + 1;
     const avatar = getAvatar(name);
-    await fbUp(ref(db, `rooms/${code}/players/${myIdx}`), { name, uid: window._fbUid, avatar, connected: true, lastSeen: Date.now() });
-    fbOnDc(ref(db, `rooms/${code}/players/${myIdx}/connected`)).set(false);
-    Object.assign(ONLINE, { active: true, isHost: false, roomCode: code, myIdx, myName: name, numPlayers: room.config.numPlayers });
+    await fbUp(ref(db, `${roomPath}/players/${myIdx}`), { name, uid: window._fbUid, avatar, connected: true, lastSeen: Date.now() });
+    fbOnDc(ref(db, `${roomPath}/players/${myIdx}/connected`)).set(false);
+    Object.assign(ONLINE, { active: true, isHost: false, roomCode: code, myIdx, myName: name, numPlayers: room.config.numPlayers, isGuest: localStorage.getItem('lr_guest_mode') === 'true' });
     document.getElementById('lobbyCode').textContent = code;
     showScreen('lobby');
     listenLobby(code);
@@ -3823,8 +3839,9 @@ function setJoinError(msg) {
 
 function listenLobby(code) {
   const { db, ref, onValue: fbOn } = fb();
+  const roomPath = getRoomPath(code);
   if (ONLINE.unsubLobby) ONLINE.unsubLobby();
-  ONLINE.unsubLobby = fbOn(ref(db, `rooms/${code}`), snap => {
+  ONLINE.unsubLobby = fbOn(ref(db, roomPath), snap => {
     if (!snap.exists()) { leaveRoom(); return; }
     const room = snap.val();
     renderLobby(room);

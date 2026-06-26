@@ -44,6 +44,27 @@
       ".write": "auth != null"
     },
 
+    "guests": {
+      "$roomCode": {
+        ".read": true,
+        ".write": true,
+        "players": {
+          "$playerId": {
+            ".read": true,
+            ".write": "auth != null"
+          }
+        },
+        "moves": {
+          ".read": true,
+          ".write": true
+        },
+        "state": {
+          ".read": true,
+          ".write": true
+        }
+      }
+    },
+
     "command-center": {
       ".read": true,
       ".write": false

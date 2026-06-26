@@ -30,3 +30,6 @@ Thumbs.db
 # Claude Code local config
 .claude/
 www/.claude/
+
+build-test-*.log
+build-test-output.log

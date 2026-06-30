@@ -5,7 +5,8 @@
 param([string]$Environment = "production")
 
 $PROJECT = "last-round-card-game"
-$SERVICE_ACCOUNT = "D:\Home\Vault\last-round-card-game-firebase-adminsdk-fbsvc-90cef74420.json"
+# SECURE: Use GitHub Secrets env var if available, fallback to local path for backward compatibility
+$SERVICE_ACCOUNT = if ($env:FIREBASE_SERVICE_ACCOUNT) { $env:FIREBASE_SERVICE_ACCOUNT } else { "D:\Home\Vault\last-round-card-game-firebase-adminsdk-fbsvc-90cef74420.json" }
 $LIVE_URL = "https://last-round-card-game.web.app"
 $ErrorActionPreference = "Stop"
 
@@ -15,6 +16,7 @@ Write-Host "==========================================" -ForegroundColor Green
 # Step 1: Verify service account exists
 if (!(Test-Path $SERVICE_ACCOUNT)) {
   Write-Host "❌ Service account not found: $SERVICE_ACCOUNT" -ForegroundColor Red
+  Write-Host "   To use GitHub Secrets: Set FIREBASE_SERVICE_ACCOUNT env var in GitHub Actions" -ForegroundColor Yellow
   exit 1
 }
 
